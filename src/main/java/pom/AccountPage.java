@@ -1,37 +1,34 @@
 package pom;
 
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+
+import static com.codeborne.selenide.Selenide.$;
 
 public class AccountPage {
 
-    private final WebDriver driver;
+    private final SelenideElement profileButton = $(By.xpath(".//a[text()='Профиль']"));
 
-    private final String url = "https://stellarburgers.nomoreparties.site/account/profile";
+    private final SelenideElement logoutButton = $(By.xpath(".//button[text()='Выход']"));
 
-    private final By profileButton = By.xpath(".//a[text()='Профиль']");
+    private final SelenideElement logoButton = $(By.xpath(".//nav/div/a"));
 
-    private final By logoutButton = By.xpath(".//button[text()='Выход']");
-
-    private final By logoButton = By.xpath(".//nav/div/a");
-
-    private final By constructorButton = By.xpath(".//a/p[text()='Конструктор']");
-
-    public AccountPage(WebDriver driver) {
-        this.driver = driver;
-    }
-
-    public boolean isAccountPageOpen() {
-        return driver.findElement(profileButton).isDisplayed();
+    public AccountPage() {
     }
 
     public AccountPage clickLogoutButton() {
-        driver.findElement(logoutButton).click();
+        logoutButton.click();
         return this;
     }
 
     public AccountPage clickLogoButton() {
-        driver.findElement(logoButton).click();
+        logoButton.click();
+        return this;
+    }
+
+    public AccountPage waitUntilAccountPageIsVisible() {
+        profileButton.shouldBe(Condition.visible);
         return this;
     }
 }

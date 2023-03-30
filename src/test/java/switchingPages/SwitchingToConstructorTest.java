@@ -1,31 +1,43 @@
 package switchingPages;
 
-import main.BrowserRule;
+import main.user.UserGenerator;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
 import pom.AccountPage;
 import pom.HomePage;
 import pom.LoginPage;
 
-public class SwitchingToConstructorTest {
+import static com.codeborne.selenide.Configuration.baseUrl;
+import static com.codeborne.selenide.Selenide.clearBrowserLocalStorage;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.WebDriverRunner.url;
 
-    @Rule
-    public BrowserRule browserRule = new BrowserRule();
+public class SwitchingToConstructorTest {
+    HomePage homePage = new HomePage();
+    LoginPage loginPage = new LoginPage();
+    AccountPage accountPage = new AccountPage();
+    UserGenerator userData = new UserGenerator();
+
+    @After
+    public void tearDown() {
+        clearBrowserLocalStorage();
+    }
 
     @Test
     public void switchingSuccessfullyToConstructor() {
-        HomePage homePage = new HomePage(browserRule.getDriver());
-        LoginPage loginPage = new LoginPage(browserRule.getDriver());
-        AccountPage accountPage = new AccountPage(browserRule.getDriver());
+        open(baseUrl);
+        homePage.clickLoginButton();
 
-        homePage.open()
+        loginPage.setUserLoginData(userData.genericLogin())
                 .clickLoginButton();
-        loginPage.setUserLoginData("fds423423423@ya.ru","56782y349uie0")
-                .clickLoginButton();
+
         homePage.clickAccountButton();
+
         accountPage.clickLogoButton();
 
-        Assert.assertTrue(homePage.isHomePageOpen());
+        homePage.waitUntilHomePageAfterLoginIsVisible();
+
+        Assert.assertEquals(baseUrl, url());
     }
 }

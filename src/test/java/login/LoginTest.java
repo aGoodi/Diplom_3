@@ -1,70 +1,82 @@
 package login;
 
-import main.BrowserRule;
+import main.user.UserGenerator;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
-import pom.HomePage;
-import pom.LoginPage;
-import pom.PasswordRecoveryPage;
-import pom.RegistrationPage;
+import pom.*;
+
+import static com.codeborne.selenide.Configuration.baseUrl;
+import static com.codeborne.selenide.Selenide.clearBrowserLocalStorage;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.WebDriverRunner.url;
+
 
 public class LoginTest {
+    HomePage homePage = new HomePage();
+    LoginPage loginPage = new LoginPage();
+    RegistrationPage registrationPage = new RegistrationPage();
+    PasswordRecoveryPage passwordRecoveryPage = new PasswordRecoveryPage();
+    UserGenerator userData = new UserGenerator();
 
-    @Rule
-    public BrowserRule browserRule = new BrowserRule();
+    @After
+    public void tearDown() {
+        clearBrowserLocalStorage();
+    }
 
     @Test
     public void loginSuccessfullyFromHomePage() {
-        HomePage homePage = new HomePage(browserRule.getDriver());
-        LoginPage loginPage = new LoginPage(browserRule.getDriver());
+        open(baseUrl);
+        homePage.clickLoginButton();
 
-        homePage.open()
-                .clickLoginButton();
-        loginPage.setUserLoginData("fds423423423@ya.ru","56782y349uie0")
-                .clickLoginButton();
+        loginPage.setUserLoginData(userData.genericLogin());
+        loginPage.clickLoginButton();
 
-        Assert.assertTrue(homePage.isDisplayedOrderButton());
+        homePage.waitUntilHomePageAfterLoginIsVisible();
+
+        Assert.assertEquals(baseUrl, url());
     }
 
     @Test
     public void loginSuccessfullyFromAccountButton() {
-        HomePage homePage = new HomePage(browserRule.getDriver());
-        LoginPage loginPage = new LoginPage(browserRule.getDriver());
+        open(baseUrl);
+        homePage.clickAccountButton();
 
-        homePage.open()
-                .clickAccountButton();
-        loginPage.setUserLoginData("fds423423423@ya.ru","56782y349uie0")
+        loginPage.setUserLoginData(userData.genericLogin())
                 .clickLoginButton();
 
-        Assert.assertTrue(homePage.isDisplayedOrderButton());
+        homePage.waitUntilHomePageAfterLoginIsVisible();
+
+        Assert.assertEquals(baseUrl, url());
     }
 
     @Test
     public void loginSuccessfullyFromRegisterPage() {
-        HomePage homePage = new HomePage(browserRule.getDriver());
-        LoginPage loginPage = new LoginPage(browserRule.getDriver());
-        RegistrationPage registrationPage = new RegistrationPage(browserRule.getDriver());
+        open(baseUrl);
+        homePage.clickLoginButton();
 
-        registrationPage.open()
-                .clickLoginButton();
-        loginPage.setUserLoginData("fds423423423@ya.ru","56782y349uie0")
+        loginPage.clickRegistrationButton();
+
+        registrationPage.clickLoginButton();
+
+        loginPage.setUserLoginData(userData.genericLogin())
                 .clickLoginButton();
 
-        Assert.assertTrue(homePage.isDisplayedOrderButton());
+        homePage.waitUntilHomePageAfterLoginIsVisible();
+
+        Assert.assertEquals(baseUrl, url());
     }
 
     @Test
-    public void loginSuccessfullyFromePasswordRecoveryPage() {
-        HomePage homePage = new HomePage(browserRule.getDriver());
-        LoginPage loginPage = new LoginPage(browserRule.getDriver());
-        PasswordRecoveryPage passwordRecoveryPage = new PasswordRecoveryPage(browserRule.getDriver());
+    public void loginSuccessfullyFromPasswordRecoveryPage() {
+        open(baseUrl + "forgot-password");
+        passwordRecoveryPage.clickLoginButton();
 
-        passwordRecoveryPage.open()
-                .clickLoginButton();
-        loginPage.setUserLoginData("fds423423423@ya.ru","56782y349uie0")
-                .clickLoginButton();
+        loginPage.setUserLoginData(userData.genericLogin());
+        loginPage.clickLoginButton();
 
-        Assert.assertTrue(homePage.isDisplayedOrderButton());
+        homePage.waitUntilHomePageAfterLoginIsVisible();
+
+        Assert.assertEquals(baseUrl, url());
     }
 }

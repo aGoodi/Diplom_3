@@ -1,73 +1,70 @@
 package pom;
 
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+
+import static com.codeborne.selenide.Selectors.by;
+import static com.codeborne.selenide.Selenide.$;
 
 public class HomePage {
+    private final SelenideElement loginButton = $(By.xpath(".//button[text() = 'Войти в аккаунт']"));
 
-    private final WebDriver driver;
-    private final String url = "https://stellarburgers.nomoreparties.site/";
-    private final By loginButton = By.xpath(".//button[text() = 'Войти в аккаунт']");
-    private final By orderButton = By.xpath(".//button[text() = 'Оформить заказ']");
-    private final By accountButton = By.xpath(".//nav/a/p");
-    private final By pageHeading = By.xpath(".//h1[text()='Соберите бургер']");
-    private final By currentTab = By.xpath(".//div[contains(@class, 'current')]/span");
-    private final By bunsTab = By.xpath(".//span[text()='Булки']");
-    private final By saucesTab = By.xpath(".//span[text()='Соусы']");
-    private final By fillingsTab = By.xpath(".//span[text()='Начинки']");
+    private final SelenideElement orderButton = $(By.xpath(".//button[text() = 'Оформить заказ']"));
 
-    public HomePage(WebDriver driver) {
-        this.driver = driver;
-    }
+    private final SelenideElement accountButton = $(by("href", "/account"));
 
-    public HomePage open() {
-        driver.get(url);
-        return this;
+    private final SelenideElement currentTab = $(By.xpath(".//div[contains(@class, 'current')]/span"));
+
+    private final SelenideElement bunsTab = $(By.xpath(".//span[text()='Булки']"));
+
+    private final SelenideElement saucesTab = $(By.xpath(".//span[text()='Соусы']"));
+
+    private final SelenideElement fillingsTab = $(By.xpath(".//span[text()='Начинки']"));
+
+    public HomePage() {
     }
 
     public HomePage clickLoginButton() {
-        driver.findElement(loginButton).click();
+        loginButton.click();
         return this;
     }
 
     public HomePage clickAccountButton() {
-        driver.findElement(accountButton).click();
+        accountButton.click();
         return this;
     }
 
     public HomePage clickSaucesTab() {
-        driver.findElement(saucesTab).click();
+        saucesTab.click();
         return this;
     }
 
     public HomePage clickBunsTab() {
-        driver.findElement(bunsTab).click();
+        bunsTab.click();
         return this;
     }
 
     public boolean isBunsTabSelected() {
-        return driver.findElement(currentTab).getText().equals("Булки");
+        return currentTab.getText().equals("Булки");
     }
 
     public boolean isSaucesTabSelected() {
-        return driver.findElement(currentTab).getText().equals("Соусы");
+        return currentTab.getText().equals("Соусы");
     }
 
     public HomePage clickFillingsTab() {
-        driver.findElement(fillingsTab).click();
+        fillingsTab.click();
         return this;
     }
 
     public boolean isFillingsTabSelected() {
-        return driver.findElement(currentTab).getText().equals("Начинки");
+        return currentTab.getText().equals("Начинки");
     }
 
-    public boolean isHomePageOpen() {
-        return driver.findElement(pageHeading).isDisplayed();
-    }
-
-    public boolean isDisplayedOrderButton() {
-        return driver.findElement(orderButton).isDisplayed();
+    public HomePage waitUntilHomePageAfterLoginIsVisible() {
+        orderButton.shouldBe(Condition.visible);
+        return this;
     }
 
 }

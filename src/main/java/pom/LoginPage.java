@@ -1,46 +1,46 @@
 package pom;
 
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.SelenideElement;
+import main.user.User;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import java.util.List;
+
+import static com.codeborne.selenide.Selectors.by;
+import static com.codeborne.selenide.Selenide.$;
 
 public class LoginPage {
 
-    private final WebDriver driver;
+    private final SelenideElement pageHeading = $(By.xpath(".//main/div/h2"));
 
-    private final String url = "https://stellarburgers.nomoreparties.site/login";
-    private final By pageHeading = By.xpath(".//main/div/h2");
+    private final SelenideElement passwordField = $(By.xpath(".//input[@type = 'password']"));
 
-    private final By passwordField = By.xpath(".//input[@type = 'password']");
+    private final SelenideElement loginButton = $(By.xpath(".//button[text() = 'Войти']"));
 
-    private final By loginButton = By.xpath(".//button[text() = 'Войти']");
+    private final SelenideElement registrationButton = $(By.xpath(".//a[text() = 'Зарегистрироваться']"));
 
-    private final By registrationLink = By.xpath(".//a[text() = 'Зарегистрироваться']");
-    private final By textFields = By.xpath(".//input[@type = 'text']");
+    private final SelenideElement emailField = $(by("name", "name"));
 
-    public LoginPage(WebDriver driver) {
-        this.driver = driver;
+    public LoginPage() {
     }
 
-    public LoginPage open() {
-        driver.get(url);
+    public LoginPage waitUntilLoginPageIsVisible() {
+        pageHeading.shouldBe(Condition.visible);
         return this;
-    }
-
-    public boolean isLoginPageOpen() {
-        return driver.findElement(pageHeading).isDisplayed();
     }
 
     public LoginPage clickLoginButton(){
-        driver.findElement(loginButton).click();
+        loginButton.click();
         return this;
     }
 
-    public LoginPage setUserLoginData(String email, String password) {
-        List<WebElement> elements = driver.findElements(textFields);
-        elements.get(0).sendKeys(email);
-        driver.findElement(passwordField).sendKeys(password);
+    public LoginPage clickRegistrationButton() {
+        registrationButton.click();
+        return this;
+    }
+
+    public LoginPage setUserLoginData(User user) {
+        emailField.sendKeys(user.getEmail());
+        passwordField.sendKeys(user.getPassword());
         return this;
     }
 
