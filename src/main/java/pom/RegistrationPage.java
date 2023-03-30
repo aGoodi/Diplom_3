@@ -1,59 +1,50 @@
 package pom;
 
+import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideElement;
+import main.user.User;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-
 import java.util.List;
+
+import static com.codeborne.selenide.Selectors.by;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 
 public class RegistrationPage {
 
-    private final WebDriver driver;
+    private final ElementsCollection textFields = $$(By.xpath(".//input[@type = 'text']"));
 
-    private final String url = "https://stellarburgers.nomoreparties.site/register";
+    private final SelenideElement passwordField = $(By.xpath(".//input[@type = 'password']"));
 
-    private final By textFields = By.xpath(".//input[@type = 'text']");
+    private final SelenideElement registrationButton = $(By.xpath(".//button[text() = 'Зарегистрироваться']"));
 
-    //private final By emailField = By.xpath(".//label[text() = 'Email']/input");
+    private final SelenideElement loginButton = $(by("href", "/login"));
 
-    private final By passwordField = By.xpath(".//input[@type = 'password']");
-
-    private final By registrationButton = By.xpath(".//button[text() = 'Зарегистрироваться']");
-
-    private final By loginButton = By.xpath(".//a[text() = 'Войти']");
-
-    private final By passwordError = By.xpath(".//p[text() = 'Некорректный пароль']");
+    private final SelenideElement passwordError = $(By.xpath(".//p[text() = 'Некорректный пароль']"));
 
 
-    public RegistrationPage(WebDriver driver) {
-        this.driver = driver;
+    public RegistrationPage() {
     }
 
-    public RegistrationPage open() {
-        driver.get(url);
-        return this;
-    }
-
-    public RegistrationPage setUserRegistrationData(String name, String email, String password) {
-        List<WebElement> elements = driver.findElements(textFields);
-        elements.get(0).sendKeys(name);
-        elements.get(1).sendKeys(email);
-        driver.findElement(passwordField).sendKeys(password);
+    public RegistrationPage setUserRegistrationData(User user) {
+        List<SelenideElement> elements = textFields;
+        elements.get(0).sendKeys(user.getName());
+        elements.get(1).sendKeys(user.getEmail());
+        passwordField.sendKeys(user.getPassword());
         return this;
     }
 
     public RegistrationPage clickRegisterButton() {
-        driver.findElement(registrationButton).click();
+        registrationButton.click();
         return this;
     }
 
     public RegistrationPage clickLoginButton() {
-        driver.findElement(loginButton).click();
+        loginButton.click();
         return this;
     }
 
     public boolean isPasswordErrorDisplayed() {
-        return driver.findElement(passwordError).isDisplayed();
+        return passwordError.isDisplayed();
     }
-
 }

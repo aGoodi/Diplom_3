@@ -1,42 +1,36 @@
 package constructor;
 
-import main.BrowserRule;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
 import pom.HomePage;
 
+import static com.codeborne.selenide.Configuration.baseUrl;
+import static com.codeborne.selenide.Selenide.open;
+
 public class IngredientSelectionTest {
 
-    @Rule
-    public BrowserRule browserRule = new BrowserRule();
+    HomePage homePage = new HomePage();
 
     @Test
     public void switchingFillingTabsSuccessfully() {
-        HomePage homePage = new HomePage(browserRule.getDriver());
-
-        homePage.open()
-                .clickFillingsTab();
+        open(baseUrl);
+        homePage.clickFillingsTab();
 
         Assert.assertTrue(homePage.isFillingsTabSelected());
     }
 
     @Test
     public void switchingSaucesTabsSuccessfully() {
-        HomePage homePage = new HomePage(browserRule.getDriver());
-
-        homePage.open()
-                .clickSaucesTab();
+        open(baseUrl);
+        homePage.clickSaucesTab();
 
         Assert.assertTrue(homePage.isSaucesTabSelected());
     }
 
     @Test
     public void switchingBunsTabsSuccessfully() {
-        HomePage homePage = new HomePage(browserRule.getDriver());
-
-        homePage.open()
-                .clickSaucesTab()
+        open(baseUrl);
+        homePage.clickSaucesTab()
                 .clickBunsTab();
 
         Assert.assertTrue(homePage.isBunsTabSelected());

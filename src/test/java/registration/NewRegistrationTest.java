@@ -1,36 +1,43 @@
 package registration;
 
-import main.BrowserRule;
-import org.apache.commons.lang3.RandomStringUtils;
+import main.user.UserGenerator;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
 import pom.LoginPage;
 import pom.RegistrationPage;
 
-public class NewRegistrationTest {
+import static com.codeborne.selenide.Configuration.baseUrl;
+import static com.codeborne.selenide.Selenide.clearBrowserLocalStorage;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.WebDriverRunner.url;
 
-    @Rule
-    public BrowserRule browserRule = new BrowserRule();
+public class NewRegistrationTest {
+    LoginPage loginPage = new LoginPage();
+    RegistrationPage registrationPage = new RegistrationPage();
+    UserGenerator userData = new UserGenerator();
+
+    @After
+    public void tearDown() {
+        clearBrowserLocalStorage();
+    }
 
     @Test
     public void makeSuccessfulRegistration() {
-        LoginPage loginPage = new LoginPage(browserRule.getDriver());
-        RegistrationPage registrationPage = new RegistrationPage(browserRule.getDriver());
-
-        registrationPage.open()
-                .setUserRegistrationData(RandomStringUtils.randomAlphabetic(12), RandomStringUtils.randomAlphabetic(12), RandomStringUtils.randomAlphabetic(12))
+        open(baseUrl + "register");
+        registrationPage.setUserRegistrationData(userData.randomRegister())
                 .clickRegisterButton();
 
-        Assert.assertTrue(loginPage.isLoginPageOpen());
+        loginPage.waitUntilLoginPageIsVisible();
+
+        Assert.assertFalse(registrationPage.isPasswordErrorDisplayed());
+        Assert.assertEquals((baseUrl + "account/profile"), url());
     }
 
     @Test
     public void makeFailedRegistrationWithInvalidPassword() {
-        RegistrationPage registrationPage = new RegistrationPage(browserRule.getDriver());
-
-        registrationPage.open()
-                .setUserRegistrationData(RandomStringUtils.randomAlphabetic(12), RandomStringUtils.randomAlphabetic(12), RandomStringUtils.randomAlphabetic(5))
+        open(baseUrl + "register");
+        registrationPage.setUserRegistrationData(userData.randomRegisterWithShortPassword())
                 .clickRegisterButton();
 
         Assert.assertTrue(registrationPage.isPasswordErrorDisplayed());

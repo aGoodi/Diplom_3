@@ -1,40 +1,52 @@
 package switchingPages;
 
-import main.BrowserRule;
+import main.user.UserGenerator;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
 import pom.AccountPage;
 import pom.HomePage;
 import pom.LoginPage;
 
+import static com.codeborne.selenide.Configuration.baseUrl;
+import static com.codeborne.selenide.Selenide.clearBrowserLocalStorage;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.WebDriverRunner.url;
+
 public class SwitchingToAccountTest {
-    @Rule
-    public BrowserRule browserRule = new BrowserRule();
+    HomePage homePage = new HomePage();
+    LoginPage loginPage = new LoginPage();
+    AccountPage accountPage = new AccountPage();
+    UserGenerator userData = new UserGenerator();
+
+
+    @After
+    public void tearDown() {
+        clearBrowserLocalStorage();
+    }
 
     @Test
     public void switchingSuccessfullyToAccountPageWithAuth() {
-        HomePage homePage = new HomePage(browserRule.getDriver());
-        LoginPage loginPage = new LoginPage(browserRule.getDriver());
-        AccountPage accountPage = new AccountPage(browserRule.getDriver());
+        open(baseUrl);
+        homePage.clickLoginButton();
 
-        homePage.open()
+        loginPage.setUserLoginData(userData.genericLogin())
                 .clickLoginButton();
-        loginPage.setUserLoginData("fds423423423@ya.ru","56782y349uie0")
-                .clickLoginButton();
+
         homePage.clickAccountButton();
 
-        Assert.assertTrue(accountPage.isAccountPageOpen());
+        accountPage.waitUntilAccountPageIsVisible();
+
+        Assert.assertEquals((baseUrl + "account/profile"), url());
     }
 
     @Test
     public void switchingSuccessfullyToAccountPageWithoutAuth() {
-        HomePage homePage = new HomePage(browserRule.getDriver());
-        LoginPage loginPage = new LoginPage(browserRule.getDriver());
+        open(baseUrl);
+        homePage.clickAccountButton();
 
-        homePage.open()
-                .clickAccountButton();
+        loginPage.waitUntilLoginPageIsVisible();
 
-        Assert.assertTrue(loginPage.isLoginPageOpen());
+        Assert.assertEquals((baseUrl + "login"), url());
     }
 }
