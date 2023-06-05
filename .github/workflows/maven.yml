@@ -35,7 +35,7 @@ jobs:
       run: mvn test
       
     - name: Report results
-      run: allure:report -f pom.xml
+      run: mvn allure:report
       
     - name: Get Allure history
       uses: actions/checkout@v2
