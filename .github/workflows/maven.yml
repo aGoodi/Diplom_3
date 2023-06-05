@@ -34,6 +34,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      
     - name: Execute tests
       run: mvn -B test -f pom.xml
 
