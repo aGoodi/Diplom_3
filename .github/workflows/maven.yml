@@ -38,7 +38,7 @@ jobs:
       uses: actions/checkout@v3
       
     - name: Execute tests
-      run: mvn -B test -f pom.xml
+      run: mvn test
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph
