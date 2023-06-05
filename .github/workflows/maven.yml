@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Java CI with Maven
+name: Build and Test
 
 on:
   push:
@@ -15,7 +15,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build_and_test:
+  build:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -34,6 +34,7 @@ jobs:
     - name: Execute tests
       run: mvn test
       
+      
     - name: Get Allure history
       uses: actions/checkout@v2
       if: always()
@@ -42,7 +43,7 @@ jobs:
           ref: gh-pages
           path: gh-pages
 
-    - name: Allure Report action from marketplace
+    - name: Allure Report
       uses: simple-elf/allure-report-action@master
       if: always()
       id: allure-report
